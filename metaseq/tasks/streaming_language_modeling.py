@@ -23,6 +23,7 @@ from metaseq.data import (
     ResamplingDataset,
     StreamingShuffleDataset,
     StreamingTokenBlockDataset,
+    StreamingSrcTgtDataset,
     data_utils,
     iterators,
 )
@@ -38,6 +39,8 @@ except ImportError:
 
 
 logger = logging.getLogger(__name__)
+
+DEFAULT_MULTICORPUS_MAX = -1
 
 
 @dataclass
@@ -82,6 +85,10 @@ class StreamingLanguageModelingConfig(MetaseqDataclass):
         metadata={
             "help": "smoothing alpha for sample rations across multiple datasets"
         },
+    )
+    multicorpus_sampling_maximum: Optional[float] = field(
+        default=DEFAULT_MULTICORPUS_MAX,
+        metadata={"help": "Maximum size for example proportional sampling"},
     )
 
     # TODO common vars below add to parent
@@ -174,9 +181,15 @@ class StreamingLanguageModelingTask(LegacyTask):
         """
         Get smoothed sampling porbability by corpus. This helps small corpus by upsampling them.
         """
-        prob = dataset_lens / dataset_lens.sum()
-        smoothed_prob = prob**self.args.multicorpus_sampling_alpha
-        smoothed_prob = smoothed_prob / smoothed_prob.sum()
+        if self.args.multicorpus_sampling_maximum == DEFAULT_MULTICORPUS_MAX:
+            prob = dataset_lens / dataset_lens.sum()
+            smoothed_prob = prob**self.args.multicorpus_sampling_alpha
+            smoothed_prob = smoothed_prob / smoothed_prob.sum()
+        else:
+            dataset_lens = [
+                min(l, self.args.multicorpus_sampling_maximum) for l in dataset_lens
+            ]
+            smoothed_prob = dataset_lens / sum(dataset_lens)
         return smoothed_prob
 
     def _alpha_sampling(self, datasets, corpora, epoch=1):
@@ -415,7 +428,9 @@ class StreamingLanguageModelingTask(LegacyTask):
         # thus increasing randomness. This assumes that no single document spans
         # 10 full batches, which is reasonable when batch sizes are in the
         # millions and documents are on average much smaller.
-        assert isinstance(dataset, StreamingTokenBlockDataset)
+        assert isinstance(dataset, StreamingTokenBlockDataset) or isinstance(
+            dataset, StreamingSrcTgtDataset
+        )
         shuffle_buffer_size = 10 * max_sentences * num_shards
         logger.info(f"setting shuffle buffer size to {shuffle_buffer_size}")
         dataset.set_shuffle_buffer_size(shuffle_buffer_size)
