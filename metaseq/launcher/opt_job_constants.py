@@ -54,13 +54,16 @@ class ComputeEnvs(Enum):
     AWS = "aws"
     AZURE = "azure"
     FAIR = "fair"
+    JUWELS_BOOSTER = "juwelsbooster"
 
 
 DATA_LOCATIONS = {
-    ComputeEnvs.AZURE: "/data/opt",
+    ComputeEnvs.AZURE: "/data/opt" ,
+    ComputeEnvs.JUWELS_BOOSTER: "/p/scratch/opengptx/john2/opengpt/data"
 }
 
 VALID_SUBSETS = [
+    "epubtxt",
     "BookCorpusFair",
     "CommonCrawl",
     "DM_Mathematics",
@@ -72,4 +75,5 @@ VALID_SUBSETS = [
     "Wikipedia_en",
     "redditflattened",
     "stories",
+    "oscar",
 ]

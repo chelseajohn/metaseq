@@ -236,6 +236,10 @@ def gen_srun_command_and_str(args, save_dir_key, train_log, train_stderr, train_
     ]
     if args.cpu_bind:
         base_srun_cmd += [f"--cpu-bind={args.cpu_bind}"]
+    if args.account:
+        base_srun_cmd += [f"--account={args.account}"]
+    if args.juwelsbooster:
+        base_srun_cmd += [f"--gres=gpu:{args.num_gpus}"]
     if args.salloc:
         excluded_hosts = os.environ.get("EXCLUDED_HOSTS", None)
         included_hosts = os.environ.get("INCLUDED_HOSTS", None)
@@ -243,7 +247,7 @@ def gen_srun_command_and_str(args, save_dir_key, train_log, train_stderr, train_
             "--nodes",
             str(args.num_nodes),
             "--ntasks-per-node",
-            str(args.num_gpus),
+            str(args.ntasks_per_node),
             "--ntasks",
             str(args.num_gpus * args.num_nodes),
             "--cpus-per-task",
@@ -275,7 +279,7 @@ def gen_sbatch_command_and_str(
         "--nodes",
         str(args.num_nodes),
         "--ntasks-per-node",
-        str(args.num_gpus),
+        str(args.ntasks_per_node),
         "--cpus-per-task",
         args.cpus_per_task,
         "--output",
@@ -288,6 +292,11 @@ def gen_sbatch_command_and_str(
         "--signal",
         "B:USR1@180",
     ]
+
+    if args.account:
+        sbatch_cmd += ["--account", args.account]
+    if args.juwelsbooster:
+        sbatch_cmd += [f"--gres=gpu:{args.num_gpus}"]
 
     if args.constraint:
         sbatch_cmd += ["--constraint", args.constraint]

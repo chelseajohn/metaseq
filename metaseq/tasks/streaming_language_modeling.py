@@ -125,11 +125,11 @@ class StreamingLanguageModelingTask(LegacyTask):
             # and do not use <s/> (the default) but <EOS>
             self.eod = self.tokenizer.token_to_id("<EOS>")
 
-        assert (
-            self.eod is not None
-        ), "Cannot find end-of-document symbol ({}) in tokenizer".format(
-            args.end_of_document_symbol
-        )
+        # assert (
+        #     self.eod is not None
+        # ), "Cannot find end-of-document symbol ({}) in tokenizer".format(
+        #     args.end_of_document_symbol
+        # )
 
         # construct a dummy metaseq Dictionary corresponding to the given tokenizer
         self.dictionary = Dictionary()

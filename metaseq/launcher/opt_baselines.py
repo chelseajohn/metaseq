@@ -67,8 +67,8 @@ def add_extra_options_func(parser):
 def get_grid(args):
     # Infer data path if not given
     DATA_ROOT = ""
+    cluster_env = get_env_from_args(args)
     if args.data is None and not args.benchmark:
-        cluster_env = get_env_from_args(args)
         args.data = os.path.join(
             DATA_LOCATIONS[cluster_env], "corpus_dedup_10_10_1_0.05_exp29"
         )
@@ -76,6 +76,10 @@ def get_grid(args):
             DATA_ROOT = DATA_LOCATIONS[cluster_env]
         else:
             raise RuntimeError("Where are you running this?! Check DATA_LOCATIONS.")
+
+    if args.juwelsbooster:
+        DATA_ROOT = DATA_LOCATIONS[cluster_env]
+    
 
     SEQ_LEN = 2048
     size = MODEL_SIZES[args.model_size]
@@ -148,7 +152,7 @@ def get_grid(args):
         hyperparam("--train-subset", "train"),
         hyperparam("--valid-subset", ",".join(f"valid/{ss}" for ss in VALID_SUBSETS)),
         hyperparam("--ignore-unused-valid-subsets"),
-        hyperparam("--num-workers", 8),
+        hyperparam("--num-workers", 4),
         hyperparam("--num-workers-valid", 1),
         hyperparam("--validate-interval-updates", 2000),
         hyperparam("--save-interval-updates", 2000),

@@ -78,9 +78,11 @@ def get_env_from_args(args):
         return ComputeEnvs.AWS
     elif args.fair:
         return ComputeEnvs.FAIR
+    elif args.juwelsbooster:
+        return ComputeEnvs.JUWELS_BOOSTER
     else:
         raise NotImplementedError(
-            "Env not passed in! Please pass in one of: --azure, --aws, --fair"
+            "Env not passed in! Please pass in one of: --azure, --aws, --fair, --juwelsbooster"
         )
 
 
@@ -187,6 +189,7 @@ def _get_args(add_extra_options_func=None, input_args: Optional[List[str]] = Non
     parser.add_argument("--azure", action="store_true", help="running on azure")
     parser.add_argument("--aws", action="store_true", help="running on aws")
     parser.add_argument("--fair", action="store_true", help="running on fair")
+    parser.add_argument("--juwelsbooster", action="store_true", help="running on juwels-booster")
 
     # Azure specific flag
     parser.add_argument(
@@ -201,7 +204,13 @@ def _get_args(add_extra_options_func=None, input_args: Optional[List[str]] = Non
         help="Automatically name azure folder",
     )
 
+    # Juwels-booster slurm args
+    parser.add_argument("-A","--account", help="account to run the job in juwels-booster")
+    parser.add_argument("--ntasks-per-node",type=int, 
+    required=True, help="number of tasks per node")
+    
     # Following args have env specific defaults.
+   
     parser.add_argument(
         "--partition",
         help="slurm partition to run on",
@@ -230,8 +239,8 @@ def _get_args(add_extra_options_func=None, input_args: Optional[List[str]] = Non
 
     # Env check
     assert (
-        sum([args.azure, args.aws, args.fair]) == 1
-    ), "Must pass an env, and only one env (--azure, --aws, --fair)!"
+        sum([args.azure, args.aws, args.fair, args.juwelsbooster]) == 1
+    ), "Must pass an env, and only one env (--azure, --aws, --fair, --juwelsbooster)!"
 
     # Set defaults based on env
     env = get_env_from_args(args)
@@ -244,6 +253,8 @@ def _modify_arg_defaults_based_on_env(env, args):
     default_partition = None
     if env == ComputeEnvs.FAIR:
         default_partition = "learnfair"
+    elif env == ComputeEnvs.JUWELS_BOOSTER:
+        default_partition = "booster"
 
     default_prefix = ""
     if env == ComputeEnvs.AZURE:
@@ -252,6 +263,9 @@ def _modify_arg_defaults_based_on_env(env, args):
         default_prefix = "/checkpoints"
     elif env == ComputeEnvs.FAIR:
         default_prefix = "/checkpoint"
+    elif env == ComputeEnvs.JUWELS_BOOSTER:
+        default_prefix = "/p/scratch/opengptx/"
+
 
     if env == ComputeEnvs.FAIR:
         default_checkpoint_dir = os.path.join(
@@ -261,7 +275,7 @@ def _modify_arg_defaults_based_on_env(env, args):
         default_checkpoint_dir = os.path.join(
             default_prefix,
             os.environ["USER"],
-            "checkpoints",
+            "OPT_checkpoints",
             str(datetime.date.today()),
         )
 
@@ -270,6 +284,8 @@ def _modify_arg_defaults_based_on_env(env, args):
         default_cpu_per_task = 12
     elif env == ComputeEnvs.FAIR:
         default_cpu_per_task = 10
+    elif env == ComputeEnvs.JUWELS_BOOSTER:
+        default_cpu_per_task = 48
 
     default_cpu_bind = "none"
     if env == ComputeEnvs.AZURE:
@@ -320,7 +336,14 @@ def _modify_arg_defaults_based_on_env(env, args):
                 o._replace(path=os.path.dirname(o.path)).geturl(),
             ]
             subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+    elif env == ComputeEnvs.JUWELS_BOOSTER:
+        default_local_checkpoint_dir = os.path.join(
+            default_prefix,
+            os.environ["USER"],
+            "OPT_local_checkpoints",
+            str(datetime.date.today()),
+        )
+        
     # assign default slurm partition
     if args.partition is None:
         args.partition = default_partition
