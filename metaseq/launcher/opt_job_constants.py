@@ -59,7 +59,7 @@ class ComputeEnvs(Enum):
 
 DATA_LOCATIONS = {
     ComputeEnvs.AZURE: "/data/opt" ,
-    ComputeEnvs.JUWELS_BOOSTER: "/p/scratch/opengptx/john2/opengpt/data"
+    ComputeEnvs.JUWELS_BOOSTER: "/p/scratch/opengptx-elm/john2/opengptx-elm/data"
 }
 
 VALID_SUBSETS = [

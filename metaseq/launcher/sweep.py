@@ -264,7 +264,7 @@ def _modify_arg_defaults_based_on_env(env, args):
     elif env == ComputeEnvs.FAIR:
         default_prefix = "/checkpoint"
     elif env == ComputeEnvs.JUWELS_BOOSTER:
-        default_prefix = "/p/scratch/opengptx/"
+        default_prefix = "/p/scratch/opengptx-elm/"
 
 
     if env == ComputeEnvs.FAIR:
@@ -303,6 +303,8 @@ def _modify_arg_defaults_based_on_env(env, args):
         )
     elif env == ComputeEnvs.FAIR:
         default_cpu_bind = "map_ldom:0,0,0,0,1,1,1,1"
+    elif env == ComputeEnvs.JUWELS_BOOSTER:
+        default_cpu_bind = "socket"
 
     default_local_checkpoints_dir = None
     if env == ComputeEnvs.AZURE:
