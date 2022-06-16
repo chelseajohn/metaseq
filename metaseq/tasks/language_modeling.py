@@ -198,6 +198,7 @@ class LanguageModelingTask(LegacyTask):
 
         data_path = paths[(epoch - 1) % len(paths)]
         split_path = os.path.join(data_path, split)
+        # print("In language modelling task the split_path is :",split_path)
 
         # each process has its own copy of the raw data (likely to be an np.memmap)
         dataset = data_utils.load_indexed_dataset(

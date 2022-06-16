@@ -73,12 +73,13 @@ def get_grid(args):
             DATA_LOCATIONS[cluster_env], "corpus_dedup_10_10_1_0.05_exp29"
         )
         if os.path.exists(args.data):
-            DATA_ROOT = DATA_LOCATIONS[cluster_env]
+            DATA_ROOT = args.data
         else:
             raise RuntimeError("Where are you running this?! Check DATA_LOCATIONS.")
 
-    if args.juwelsbooster:
-        DATA_ROOT = DATA_LOCATIONS[cluster_env]
+    if args.juwelsbooster and os.path.exists(args.data):
+        DATA_ROOT = args.data
+
     
 
     SEQ_LEN = 2048
@@ -109,9 +110,27 @@ def get_grid(args):
 
     grid = []
 
-    # default streaming_lm task config
+    # # default streaming_lm task config
+    # task_config = [
+    #     hyperparam("--task", "streaming_language_modeling"),
+    #     hyperparam(
+    #         "--sample-break-mode",
+    #         "none",
+    #         save_dir_key=lambda val: f"bm_{val}" if not no_save_params else "",
+    #     ),
+    #     hyperparam(
+    #         "--vocab-filename",
+    #         os.path.join(DATA_ROOT, "tokenizers/gpt2-vocab.json"),
+    #         save_dir_key=lambda _: "gpt2" if not no_save_params else "",
+    #     ),
+    #     hyperparam(
+    #         "--merges-filename", os.path.join(DATA_ROOT, "tokenizers/gpt2-merges.txt")
+    #     ),
+    # ]
+
+     #default language_modelling task config
     task_config = [
-        hyperparam("--task", "streaming_language_modeling"),
+        hyperparam("--task", "language_modeling"),
         hyperparam(
             "--sample-break-mode",
             "none",
@@ -119,13 +138,14 @@ def get_grid(args):
         ),
         hyperparam(
             "--vocab-filename",
-            os.path.join(DATA_ROOT, "tokenizers/gpt2-vocab.json"),
+            "/p/scratch/opengptx-elm/john2/opengpt/data/tokenizers/gpt2-vocab.json",
             save_dir_key=lambda _: "gpt2" if not no_save_params else "",
         ),
         hyperparam(
-            "--merges-filename", os.path.join(DATA_ROOT, "tokenizers/gpt2-merges.txt")
+            "--merges-filename", "/p/scratch/opengptx-elm/john2/opengpt/data/tokenizers/gpt2-merges.txt"
         ),
     ]
+
 
     # separate task config for dummy_lm
     if args.benchmark:
@@ -152,7 +172,7 @@ def get_grid(args):
         hyperparam("--train-subset", "train"),
         hyperparam("--valid-subset", ",".join(f"valid/{ss}" for ss in VALID_SUBSETS)),
         hyperparam("--ignore-unused-valid-subsets"),
-        hyperparam("--num-workers", 4),
+        hyperparam("--num-workers", 1),
         hyperparam("--num-workers-valid", 1),
         hyperparam("--validate-interval-updates", 2000),
         hyperparam("--save-interval-updates", 2000),

@@ -62,18 +62,19 @@ DATA_LOCATIONS = {
     ComputeEnvs.JUWELS_BOOSTER: "/p/scratch/opengptx-elm/john2/opengptx-elm/data"
 }
 
-VALID_SUBSETS = [
-    "epubtxt",
-    "BookCorpusFair",
-    "CommonCrawl",
-    "DM_Mathematics",
-    "Gutenberg_PG-19",
-    "HackerNews",
-    "OpenSubtitles",
-    "OpenWebText2",
-    "USPTO",
-    "Wikipedia_en",
-    "redditflattened",
-    "stories",
-    "oscar",
-]
+# VALID_SUBSETS = [
+#     "epubtxt",
+#     "BookCorpusFair",
+#     "CommonCrawl",
+#     "DM_Mathematics",
+#     "Gutenberg_PG-19",
+#     "HackerNews",
+#     "OpenSubtitles",
+#     "OpenWebText2",
+#     "USPTO",
+#     "Wikipedia_en",
+#     "redditflattened",
+#     "stories",
+#     "oscar"
+# ]
+VALID_SUBSETS = ["oscar_text_document",]
