@@ -169,7 +169,7 @@ def get_grid(args):
     no_save_params = args.no_save_dir
     args.snapshot_code = True
     grid += [
-        hyperparam("--train-subset", "train"),
+        hyperparam("--train-subset", "train/oscar_text_document"),
         hyperparam("--valid-subset", ",".join(f"valid/{ss}" for ss in VALID_SUBSETS)),
         hyperparam("--ignore-unused-valid-subsets"),
         hyperparam("--num-workers", 1),
