@@ -78,6 +78,8 @@ def _infer_slurm_init(cfg: DistributedTrainingConfig):
                 ["scontrol", "show", "hostnames", node_list]
             )
             host = hostnames.split()[0].decode("utf-8")
+            # Allow communication over infiniband
+            host +="i"
         except subprocess.CalledProcessError as e:  # scontrol failed
             raise e
         except FileNotFoundError:  # Slurm is not installed
