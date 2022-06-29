@@ -138,12 +138,13 @@ def get_grid(args):
         ),
         hyperparam(
             "--vocab-filename",
-            os.path.join(os.path.pardir,"/metaseq/projects/OPT/assets/gpt2-vocab.json"),
+            "/p/project/opengptx-elm/john2/opengpt/OPT/metaseq/projects/OPT/assets/gpt2-vocab.json",
             save_dir_key=lambda _: "gpt2" if not no_save_params else "",
         ),
         hyperparam(
             "--merges-filename",
-            os.path.join(os.path.pardir,"/metaseq/projects/OPT/assets/gpt2-merges.txt")),
+            "/p/project/opengptx-elm/john2/opengpt/OPT/metaseq/projects/OPT/assets/gpt2-merges.txt",
+        ),
     ]
 
 
