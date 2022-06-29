@@ -128,7 +128,7 @@ def get_grid(args):
     #     ),
     # ]
 
-     #default language_modelling task config
+    #language_modeling task config
     task_config = [
         hyperparam("--task", "language_modeling"),
         hyperparam(
@@ -138,12 +138,12 @@ def get_grid(args):
         ),
         hyperparam(
             "--vocab-filename",
-            "/p/scratch/opengptx-elm/john2/opengpt/data/tokenizers/gpt2-vocab.json",
+            os.path.join(os.path.pardir,"/metaseq/projects/OPT/assets/gpt2-vocab.json"),
             save_dir_key=lambda _: "gpt2" if not no_save_params else "",
         ),
         hyperparam(
-            "--merges-filename", "/p/scratch/opengptx-elm/john2/opengpt/data/tokenizers/gpt2-merges.txt"
-        ),
+            "--merges-filename",
+            os.path.join(os.path.pardir,"/metaseq/projects/OPT/assets/gpt2-merges.txt")),
     ]
 
 
@@ -172,10 +172,10 @@ def get_grid(args):
         hyperparam("--train-subset", "train/oscar_text_document"),
         hyperparam("--valid-subset", ",".join(f"valid/{ss}" for ss in VALID_SUBSETS)),
         hyperparam("--ignore-unused-valid-subsets"),
-        hyperparam("--num-workers", 1),
+        hyperparam("--num-workers", 8),
         hyperparam("--num-workers-valid", 1),
-        hyperparam("--validate-interval-updates", 2000),
-        hyperparam("--save-interval-updates", 2000),
+        hyperparam("--validate-interval-updates", 1500),
+        hyperparam("--save-interval-updates", 1500),
         hyperparam(
             "--no-epoch-checkpoints"
         ),  # only save checkpoints based on num steps

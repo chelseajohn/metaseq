@@ -26,8 +26,8 @@ class Size:
 # see table 2.1 in https://arxiv.org/pdf/2005.14165.pdf
 
 # assert all sizes make sense
-TOTAL_TRAIN_TOKENS = 300e6
-TOTAL_WARMUP_TOKENS = 216e3
+TOTAL_TRAIN_TOKENS = 300e9
+TOTAL_WARMUP_TOKENS = 375e6
 M = 1024 * 1024  # 1 million
 
 MODEL_SIZES = {
