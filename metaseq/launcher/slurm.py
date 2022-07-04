@@ -145,7 +145,14 @@ def set_env(args, env, dry_run):
             env["NCCL_DEBUG"] = DEFAULT_NCCL_DEBUG_LOCAL
     else:
         if args.num_nodes > 1:
-            env["NCCL_SOCKET_IFNAME"] = "^docker0,lo"
+            if args.juwelsbooster:
+                env["UCX_RC_TIMEOUT"] = "4s"
+                env["NCCL_SOCKET_IFNAME"] = "ib0"
+                # env["UCX_MEMTYPE_CACHE"] = "0"
+                env["NCCL_IB_TIMEOUT"] = "20"
+                # env["CUDA_LAUNCH_BLOCKING"] = "1"
+            else:
+                env["NCCL_SOCKET_IFNAME"] = "^docker0,lo"
             env["NCCL_DEBUG"] = DEFAULT_NCCL_DEBUG
 
 
