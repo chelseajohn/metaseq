@@ -285,7 +285,7 @@ def _modify_arg_defaults_based_on_env(env, args):
     elif env == ComputeEnvs.FAIR:
         default_cpu_per_task = 10
     elif env == ComputeEnvs.JUWELS_BOOSTER:
-        default_cpu_per_task = 48
+        default_cpu_per_task = 12
 
     default_cpu_bind = "none"
     if env == ComputeEnvs.AZURE:

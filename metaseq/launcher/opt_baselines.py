@@ -101,8 +101,8 @@ def get_grid(args):
         )
 
     total_gpus = (args.num_gpus * args.num_nodes) // size.model_parallel
-    # ddp_bsz = (size.batch_size // total_gpus) // SEQ_LEN
-    ddp_bsz = 1
+    ddp_bsz = (size.batch_size // total_gpus) // SEQ_LEN
+    # ddp_bsz = 1
     total_updates = args.max_update
     if total_updates is None:
         total_updates = int(TOTAL_TRAIN_TOKENS) // size.batch_size

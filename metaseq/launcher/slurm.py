@@ -148,9 +148,11 @@ def set_env(args, env, dry_run):
             if args.juwelsbooster:
                 env["UCX_RC_TIMEOUT"] = "4s"
                 env["NCCL_SOCKET_IFNAME"] = "ib0"
-                # env["UCX_MEMTYPE_CACHE"] = "0"
+                env["UCX_MEMTYPE_CACHE"] = "0"
                 env["NCCL_IB_TIMEOUT"] = "20"
                 # env["CUDA_LAUNCH_BLOCKING"] = "1"
+                # env["PYTORCH_NO_CUDA_MEMORY_CACHING"] = "1"
+                # env["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32000"
             else:
                 env["NCCL_SOCKET_IFNAME"] = "^docker0,lo"
             env["NCCL_DEBUG"] = DEFAULT_NCCL_DEBUG
